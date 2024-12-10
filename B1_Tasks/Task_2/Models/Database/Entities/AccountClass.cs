@@ -15,5 +15,5 @@ public class AccountClass
     public required string Name { get; set; }
 
     [NotMapped]
-    public IEnumerable<Account> Accounts { get; set; }
+    public List<Account> Accounts { get; set; }
 }

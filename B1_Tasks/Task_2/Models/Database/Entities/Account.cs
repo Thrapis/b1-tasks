@@ -11,13 +11,9 @@ public class Account
     public int Id { get; set; }
     [Column("class_id")]
     public int ClassId { get; set; }
-    [Column("currency_id")]
-    public int CurrencyId { get; set; }
-    [Column("organisation_id")]
-    public int OrganisationId { get; set; }
     [Column("number")]
     public required string Number { get; set; }
 
     [NotMapped]
-    public IEnumerable<Balance> Balances { get; set; }
+    public List<Balance> Balances { get; set; }
 }

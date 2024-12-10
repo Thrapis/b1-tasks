@@ -1,14 +1,19 @@
 import axios from "axios"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { IUploadedFile, UploadFile, GetUploadedFiles } from "shared/api/excel"
+import { IUploadedFile, IFileContent, UploadFile, GetUploadedFiles } from "shared/api/excel"
+import { GetFileView } from "shared/api/excel/Api"
 import { UploadedFileView } from "widgets/UploadedFileView"
 
 
 export const HomePage = () => {
     const [fileUploadLoading, setFileUploadLoading] = useState(false)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
     const [filesLoading, setFilesLoading] = useState(true)
     const [uploadedFiles, setUploadedFiles] = useState<IUploadedFile[] | null>(null)
-    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
+    const [viewLoading, setViewLoading] = useState(false)
+    const [selectedFileView, setSelectedFileView] = useState<IFileContent | null>(null)
 
     const fetchUploadedFiles = async () => {
         await GetUploadedFiles()
@@ -20,8 +25,16 @@ export const HomePage = () => {
             .catch(error => console.error('Error fetching data:', error))
     }
 
-    const onFileClick = (id: number) => {
-        console.log(id)
+    const onFileClick = async (id: number) => {
+        setViewLoading(true)
+
+        await GetFileView(id)
+            .then(response => response.data)
+            .then(data => {
+                setSelectedFileView(data)
+                setViewLoading(false)
+            })
+            .catch(error => console.error('Error fetching data:', error))
     }
 
     const handleUploadFileSubmit = async (event: FormEvent) => {
@@ -57,7 +70,7 @@ export const HomePage = () => {
         <div className="container text-center min-vh-100 p-1 gap-4">
 
             <form className="row input-group mb-4" onSubmit={handleUploadFileSubmit}>
-                <input type="file" className="form-control" onChange={onFileInputChange}/>
+                <input type="file" className="form-control" onChange={onFileInputChange} />
                 <button type="submit" className="btn btn-success" >
                     Upload
                 </button>
@@ -82,7 +95,9 @@ export const HomePage = () => {
                     }
                 </div>
                 <div className="col-9 h-100">
-                    Z
+                    {
+                        viewLoading && (<div className="row my-4">Loading...</div>)
+                    }
                 </div>
             </div>
         </div>

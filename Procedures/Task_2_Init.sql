@@ -30,15 +30,17 @@ CREATE TABLE classes(
 CREATE TABLE accounts(
 	id SERIAL PRIMARY KEY,
 	class_id INT REFERENCES classes(id),
-	currency_id INT REFERENCES currencies(id),
-	organisation_id INT REFERENCES organisations(id),
 	number CHAR(4) NOT NULL,
-	UNIQUE(class_id, currency_id, organisation_id, number)
+	UNIQUE(class_id, number)
 );
 
 CREATE TABLE files(
 	id SERIAL PRIMARY KEY,
+	currency_id INT REFERENCES currencies(id),
+	organisation_id INT REFERENCES organisations(id),
 	name VARCHAR(255) NOT NULL,
+	period_start DATE NOT NULL,
+	period_end DATE NOT NULL,
 	data_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 	uploaded TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
@@ -47,8 +49,6 @@ CREATE TABLE balances(
 	id SERIAL PRIMARY KEY,
 	file_id INT REFERENCES files(id),
 	account_id INT REFERENCES accounts(id),
-	period_start DATE NOT NULL,
-	period_end DATE NOT NULL,
 	opening_balance_active NUMERIC,
 	opening_balance_passive NUMERIC,
 	turnover_debit NUMERIC,

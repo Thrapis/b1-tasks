@@ -85,6 +85,8 @@ public class TrialBalanceController
             }
 
             // Inserting file record
+            fileMeta.CurrencyId = actualCurrency.Id;
+            fileMeta.OrganisationId = actualOrganisation.Id;
             var fileAddResult = await dbContext.Files.AddAsync(fileMeta);
             var actualFile = fileAddResult.Entity;
             await dbContext.SaveChangesAsync();
@@ -114,20 +116,14 @@ public class TrialBalanceController
                 {
                     // Check for existing account
                     Account? actualAccount = null;
-                    if (await dbContext.Accounts.AnyAsync(a => a.Number == fileAccount.Number &&
-                        a.ClassId == actualClass.Id && a.CurrencyId == actualCurrency.Id &&
-                        a.OrganisationId == actualOrganisation.Id))
+                    if (await dbContext.Accounts.AnyAsync(a => a.Number == fileAccount.Number && a.ClassId == actualClass.Id))
                     {
                         actualAccount = await dbContext.Accounts
-                            .Where(a => a.Number == fileAccount.Number &&
-                                a.ClassId == actualClass.Id && a.CurrencyId == actualCurrency.Id &&
-                                a.OrganisationId == actualOrganisation.Id).SingleAsync();
+                            .Where(a => a.Number == fileAccount.Number && a.ClassId == actualClass.Id).SingleAsync();
                     }
                     else
                     {
                         fileAccount.ClassId = actualClass.Id;
-                        fileAccount.CurrencyId = actualCurrency.Id;
-                        fileAccount.OrganisationId = actualOrganisation.Id;
                         var result = await dbContext.Accounts.AddAsync(fileAccount);
                         actualAccount = result.Entity;
                         await dbContext.SaveChangesAsync();
@@ -154,5 +150,22 @@ public class TrialBalanceController
             
 
         // Algorithm could be much better if we used stored procedures, but I don't have time for that :(
+    }
+
+    [HttpGet("GetFileView/{fileId:int}")]
+    public async Task<FileContent> GetFileView(int fileId)
+    {
+        // Create context using factory
+        using var dbContext = _dbFactory.CreateDbContext();
+
+        var file = await dbContext.Files
+            .Include(f => f.Organisation)
+            .Include(f => f.Currency)
+            .Include(f => f.Balances).ThenInclude(b => b.Account)
+            .SingleAsync(f => f.Id == fileId);
+
+        var fileContent = EntityToViewModelConverter.ExcelDataToFileContent(file);
+
+        return fileContent;
     }
 }

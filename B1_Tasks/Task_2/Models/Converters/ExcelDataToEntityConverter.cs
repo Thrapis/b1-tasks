@@ -10,6 +10,8 @@ public static class ExcelDataToEntityConverter
         return new ExcelFile()
         {
             Name = data.FileName,
+            PeriodStart = data.PeriodStart,
+            PeriodEnd = data.PeriodEnd,
             Uploaded = DateTime.SpecifyKind(data.Created, DateTimeKind.Utc),
             DataTime = DateTime.SpecifyKind(data.DataTime, DateTimeKind.Utc),
         };
@@ -46,8 +48,6 @@ public static class ExcelDataToEntityConverter
                 {
                     new()
                     {
-                        PeriodStart = data.PeriodStart,
-                        PeriodEnd = data.PeriodEnd,
                         OpeningBalanceActive = b.OpeningBalanceActive,
                         OpeningBalancePassive = b.OpeningBalancePassive,
                         TurnoverDebit = b.TurnoverDebit,

@@ -12,10 +12,6 @@ public class Balance
     public int FileId { get; set; }
     [Column("account_id")]
     public int AccountId { get; set; }
-    [Column("period_start")]
-    public DateOnly PeriodStart { get; set; }
-    [Column("period_end")]
-    public DateOnly PeriodEnd { get; set; }
     [Column("opening_balance_active")]
     public decimal OpeningBalanceActive { get; set; }
     [Column("opening_balance_passive")]
@@ -28,4 +24,10 @@ public class Balance
     public decimal ClosingBalanceActive { get; set; }
     [Column("closing_balance_passive")]
     public decimal ClosingBalancePassive { get; set; }
+
+
+    //[ForeignKey("file_id")]
+    public ExcelFile? File { get; set; }
+    //[ForeignKey("account_id")]
+    public Account? Account { get; set; }
 }
