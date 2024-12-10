@@ -1,0 +1,3 @@
+
+ExcelFiles/*
+!ExcelFiles/Example*.xls
