@@ -6,7 +6,7 @@ using NPOI.XSSF.UserModel;
 
 namespace Task_2.TrialBalanceExcel;
 
-public class DataPacking
+public static class DataPacking
 {
     private const string _titleLine1 = "Оборотная ведомость по балансовым счетам";
     private const string _titleLine2Template = "за период с {0} по {1}";

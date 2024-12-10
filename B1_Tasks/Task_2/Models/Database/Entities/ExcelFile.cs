@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Task_2.Models.Database.Entities;
 
 [Table("files")]
-public class File
+public class ExcelFile
 {
     [Key, Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }

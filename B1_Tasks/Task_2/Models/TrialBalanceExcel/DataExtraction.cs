@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Task_2.TrialBalanceExcel;
 
-public class DataExtraction
+public static class DataExtraction
 {
     private const string _periodDatesPattern = @"(\d{2}.\d{2}.\d{4}).*?(\d{2}.\d{2}.\d{4})";
     private const string _currencyPattern = @"^\s*?в?\s*?(\S+)\s*?$";

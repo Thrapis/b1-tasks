@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using Task_2.Models.Converters;
 using Task_2.Models.Database;
 using Task_2.Models.Database.Entities;
+using Task_2.Models.ViewModels;
 using Task_2.TrialBalanceExcel;
 
 namespace Task_2.Controllers;
@@ -22,12 +24,13 @@ public class TrialBalanceController
         _dbFactory = dbFactory;
     }
 
-    [HttpGet("GetCurrencies")]
-    public IEnumerable<Currency> GetCurrencies()
+    [HttpGet("GetUploadedFiles")]
+    public IEnumerable<UploadedFile> GetUploadedFiles()
     {
         using var dbContext = _dbFactory.CreateDbContext();
+        var files = dbContext.Files.ToList();
 
-        return dbContext.Currencies.ToList();
+        return EntityToViewModelConverter.ExcelFilesToUploadedFiles(files);
     }
 
     [HttpPost("UploadFile")]
@@ -53,9 +56,9 @@ public class TrialBalanceController
         using var dbContext = _dbFactory.CreateDbContext();
         
         // Getting base entities from file data
-        var fileMeta = ExcelDataToEntity.GetFileFromData(fileData);
-        var fileCurrecy = ExcelDataToEntity.GetCurrencyFromData(fileData);
-        var fileOrganisation = ExcelDataToEntity.GetOrganisationFromData(fileData);
+        var fileMeta = ExcelDataToEntityConverter.GetFileFromData(fileData);
+        var fileCurrecy = ExcelDataToEntityConverter.GetCurrencyFromData(fileData);
+        var fileOrganisation = ExcelDataToEntityConverter.GetOrganisationFromData(fileData);
 
         using (var transaction = dbContext.Database.BeginTransaction())
         {
@@ -87,7 +90,7 @@ public class TrialBalanceController
             await dbContext.SaveChangesAsync();
 
             // Getting class, account and balance data
-            var fileClasses = ExcelDataToEntity.GetClassAndNestedFromData(fileData);
+            var fileClasses = ExcelDataToEntityConverter.GetClassAndNestedFromData(fileData);
 
             // Handling account classes
             foreach (var fileClass in fileClasses)

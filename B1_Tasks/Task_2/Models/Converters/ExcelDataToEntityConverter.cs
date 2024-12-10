@@ -1,14 +1,13 @@
-﻿using Task_2.TrialBalanceExcel.Entities;
+﻿using Task_2.Models.Database.Entities;
+using Task_2.TrialBalanceExcel.Entities;
 
 namespace Task_2.Models.Converters;
 
-public class ExcelDataToEntity
+public static class ExcelDataToEntityConverter
 {
-
-    public static Database.Entities.File GetFileFromData(TrialBalanceFileData data)
+    public static ExcelFile GetFileFromData(TrialBalanceFileData data)
     {
-        
-        return new Database.Entities.File()
+        return new ExcelFile()
         {
             Name = data.FileName,
             Uploaded = DateTime.SpecifyKind(data.Created, DateTimeKind.Utc),
@@ -16,17 +15,17 @@ public class ExcelDataToEntity
         };
     }
 
-    public static Database.Entities.Organisation GetOrganisationFromData(TrialBalanceFileData data)
+    public static Organisation GetOrganisationFromData(TrialBalanceFileData data)
     {
-        return new Database.Entities.Organisation()
+        return new Organisation()
         {
             Name = data.OrganisationName,
         };
     }
 
-    public static Database.Entities.Currency GetCurrencyFromData(TrialBalanceFileData data)
+    public static Currency GetCurrencyFromData(TrialBalanceFileData data)
     {
-        return new Database.Entities.Currency()
+        return new Currency()
         {
             CodeName = string.Empty,
             ShortName = string.Empty,
@@ -35,15 +34,15 @@ public class ExcelDataToEntity
         };
     }
 
-    public static IEnumerable<Database.Entities.AccountClass> GetClassAndNestedFromData(TrialBalanceFileData data)
+    public static IEnumerable<AccountClass> GetClassAndNestedFromData(TrialBalanceFileData data)
     {
-        return data.Classes.Select(c => new Database.Entities.AccountClass() {
+        return data.Classes.Select(c => new AccountClass() {
             Name = c.Name,
             Number = c.Number,
-            Accounts = c.Balances.Select(b => new Database.Entities.Account()
+            Accounts = c.Balances.Select(b => new Account()
             {
                 Number = b.Number,
-                Balances = new List<Database.Entities.Balance>()
+                Balances = new List<Balance>()
                 {
                     new()
                     {
