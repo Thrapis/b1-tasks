@@ -161,7 +161,7 @@ public class TrialBalanceController
         var file = await dbContext.Files
             .Include(f => f.Organisation)
             .Include(f => f.Currency)
-            .Include(f => f.Balances).ThenInclude(b => b.Account)
+            .Include(f => f.Balances).ThenInclude(b => b.Account!.Class)
             .SingleAsync(f => f.Id == fileId);
 
         var fileContent = EntityToViewModelConverter.ExcelDataToFileContent(file);

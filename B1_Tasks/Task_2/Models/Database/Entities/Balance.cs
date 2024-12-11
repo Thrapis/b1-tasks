@@ -25,9 +25,7 @@ public class Balance
     [Column("closing_balance_passive")]
     public decimal ClosingBalancePassive { get; set; }
 
-
-    //[ForeignKey("file_id")]
+    
     public ExcelFile? File { get; set; }
-    //[ForeignKey("account_id")]
     public Account? Account { get; set; }
 }

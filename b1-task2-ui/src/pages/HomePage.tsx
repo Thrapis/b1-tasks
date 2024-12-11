@@ -2,6 +2,7 @@ import axios from "axios"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { IUploadedFile, IFileContent, UploadFile, GetUploadedFiles } from "shared/api/excel"
 import { GetFileView } from "shared/api/excel/Api"
+import { FileView } from "widgets/FileView"
 import { UploadedFileView } from "widgets/UploadedFileView"
 
 
@@ -69,7 +70,7 @@ export const HomePage = () => {
     return (
         <div className="container text-center min-vh-100 p-1 gap-4">
 
-            <form className="row input-group mb-4" onSubmit={handleUploadFileSubmit}>
+            <form className="d-flex flex-row input-group mb-4" onSubmit={handleUploadFileSubmit}>
                 <input type="file" className="form-control" onChange={onFileInputChange} />
                 <button type="submit" className="btn btn-success" >
                     Upload
@@ -80,23 +81,26 @@ export const HomePage = () => {
                 fileUploadLoading && (<div className="row my-4">Loading...</div>)
             }
 
+            <div className="d-flex flex-wrap mt-4 border border-primary rounded py-2 px-1 gap-2">
+                {
+                    filesLoading ? (<div>Loading...</div>) : (
+                        uploadedFiles?.map(f => (
+                            <UploadedFileView
+                                key={crypto.randomUUID()}
+                                uploadedFile={f}
+                                onClick={onFileClick}
+                            />
+                        ))
+                    )
+                }
+            </div>
+
             <div className="row mt-4">
-                <div className="col-3 border border-primary rounded py-2 px-1 gap-2">
+                <div className="col-12 h-100 border border-warning overflow-auto" style={{maxHeight: 560}}>
                     {
-                        filesLoading ? (<div>Loading...</div>) : (
-                            uploadedFiles?.map(f => (
-                                <UploadedFileView
-                                    key={crypto.randomUUID()}
-                                    uploadedFile={f}
-                                    onClick={onFileClick}
-                                />
-                            ))
+                        viewLoading ? (<div className="row my-4">Loading...</div>) : (
+                            selectedFileView && <FileView file={selectedFileView} />
                         )
-                    }
-                </div>
-                <div className="col-9 h-100">
-                    {
-                        viewLoading && (<div className="row my-4">Loading...</div>)
                     }
                 </div>
             </div>

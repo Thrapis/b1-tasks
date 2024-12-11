@@ -26,8 +26,6 @@ public class ExcelFile
 
 
     public List<Balance> Balances { get; set; }
-    //[ForeignKey("currency_id")]
     public Currency? Currency { get; set; }
-    //[ForeignKey("organisation_id")]
     public Organisation? Organisation { get; set; }
 }

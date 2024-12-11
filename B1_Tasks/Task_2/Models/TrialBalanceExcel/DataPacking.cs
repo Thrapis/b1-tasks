@@ -21,6 +21,7 @@ public static class DataPacking
     private const string _debetColumnTitle = "Дебет";
     private const string _creditColumnTitle = "Кредит";
     private const string _classOverallRowTitle = "ПО КЛАССУ";
+    private const string _totalOverallRowTitle = "БАЛАНС";
 
     private const int _dataStartRow = 8;
     private const int _classRowHeight = 22;
@@ -296,5 +297,23 @@ public static class DataPacking
             sheet.GetRow(currentRowId).GetCell(6).SetCellValue((double)accClass.ClosingBalancePassiveSum);
             currentRowId++;
         }
+
+        // Write total overall data
+        var totalOverallRow = sheet.CreateRow(currentRowId);
+        var totalOveralTitleCell = totalOverallRow.CreateCell(0);
+        totalOveralTitleCell.CellStyle = boldAccountStyle;
+        for (int i = 1; i <= 6; i++)
+        {
+            var totalOverallCell = totalOverallRow.CreateCell(i);
+            totalOverallCell.CellStyle = boldDefaultStyle;
+        }
+        sheet.GetRow(currentRowId).GetCell(0).SetCellValue(_totalOverallRowTitle);
+        sheet.GetRow(currentRowId).GetCell(1).SetCellValue((double)data.OpeningBalanceActiveSum);
+        sheet.GetRow(currentRowId).GetCell(2).SetCellValue((double)data.OpeningBalancePassiveSum);
+        sheet.GetRow(currentRowId).GetCell(3).SetCellValue((double)data.TurnoverDebitSum);
+        sheet.GetRow(currentRowId).GetCell(4).SetCellValue((double)data.TurnoverCreditSum);
+        sheet.GetRow(currentRowId).GetCell(5).SetCellValue((double)data.ClosingBalanceActiveSum);
+        sheet.GetRow(currentRowId).GetCell(6).SetCellValue((double)data.ClosingBalancePassiveSum);
+        currentRowId++;
     }
 }

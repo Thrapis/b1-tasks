@@ -14,6 +14,8 @@ public class Account
     [Column("number")]
     public required string Number { get; set; }
 
+
+    public AccountClass? Class { get; set; }
     [NotMapped]
     public List<Balance> Balances { get; set; }
 }

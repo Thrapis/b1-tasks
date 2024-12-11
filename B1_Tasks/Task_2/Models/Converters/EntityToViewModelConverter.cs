@@ -18,7 +18,28 @@ public static class EntityToViewModelConverter
 
     public static FileContent ExcelDataToFileContent(ExcelFile excelFile)
     {
-        var groupedAccounts = excelFile.Balances!.GroupBy(b => b.Account!.Number.Substring(0, 2));
+        var classedAccountGroups = excelFile.Balances!
+            .GroupBy(g => g.Account!.Class)
+            .Select(c => new AccountGroupClass()
+            {
+                ClassName = c.Key!.Name,
+                ClassNumber = c.Key!.Number,
+                AccountGroups = c.GroupBy(b => b.Account!.Number.Substring(0, 2))
+                    .Select(g => new AccountGroup() {
+                        GroupNumber = g.Key,
+                        AccountBalances = g!.Select(b => new AccountBalance()
+                        {
+                            AccountId = b.Account!.Id,
+                            AccountNumber = b.Account!.Number,
+                            OpeningBalanceActive = b.OpeningBalanceActive,
+                            OpeningBalancePassive = b.OpeningBalancePassive,
+                            TurnoverDebit = b.TurnoverDebit,
+                            TurnoverCredit = b.TurnoverCredit,
+                            ClosingBalanceActive = b.ClosingBalanceActive,
+                            ClosingBalancePassive = b.ClosingBalancePassive,
+                        }).ToList()
+                    }).ToList(),
+            }).ToList();
 
         return new FileContent()
         {
@@ -29,21 +50,7 @@ public static class EntityToViewModelConverter
             Uploaded = excelFile.Uploaded,
             OrganisationName = excelFile.Organisation?.Name ?? string.Empty,
             CurrencySymbol = excelFile.Currency?.Symbol ?? string.Empty,
-            AccountGroups = groupedAccounts!.Select(ag => new AccountGroup()
-            {
-                GroupNumber = ag.Key,
-                AccountBalances = ag!.Select(b => new AccountBalance()
-                {
-                    AccountId = b.Account!.Id,
-                    AccountNumber = b.Account!.Number,
-                    OpeningBalanceActive = b.OpeningBalanceActive,
-                    OpeningBalancePassive = b.OpeningBalancePassive,
-                    TurnoverDebit = b.TurnoverDebit,
-                    TurnoverCredit = b.TurnoverCredit,
-                    ClosingBalanceActive = b.ClosingBalanceActive,
-                    ClosingBalancePassive = b.ClosingBalancePassive,
-                }).ToList(),
-            }).ToList(),
+            AccountGroupClasses = classedAccountGroups
         };
     }
 }

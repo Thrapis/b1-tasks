@@ -19,21 +19,45 @@ namespace Task_2.Models.ViewModels
         public DateTime Uploaded { get; set; }
         [JsonProperty(PropertyName = "currencySymbol")]
         public string CurrencySymbol { get; set; }
+        [JsonProperty(PropertyName = "accountGroupClasses")]
+        public List<AccountGroupClass> AccountGroupClasses { get; set; }
+
+        [JsonProperty(PropertyName = "openingBalanceActiveOverall")]
+        public decimal OpeningBalanceActiveOverall => AccountGroupClasses.Sum(ag => ag.OpeningBalanceActiveOverall);
+        [JsonProperty(PropertyName = "openingBalancePassiveOverall")]
+        public decimal OpeningBalancePassiveOverall => AccountGroupClasses.Sum(ab => ab.OpeningBalancePassiveOverall);
+        [JsonProperty(PropertyName = "turnoverDebitOverall")]
+        public decimal TurnoverDebitOverall => AccountGroupClasses.Sum(ab => ab.TurnoverDebitOverall);
+        [JsonProperty(PropertyName = "turnoverCreditOverall")]
+        public decimal TurnoverCreditOverall => AccountGroupClasses.Sum(ab => ab.TurnoverCreditOverall);
+        [JsonProperty(PropertyName = "closingBalanceActiveOverall")]
+        public decimal ClosingBalanceActiveOverall => AccountGroupClasses.Sum(ab => ab.ClosingBalanceActiveOverall);
+        [JsonProperty(PropertyName = "closingBalancePassiveOverall")]
+        public decimal ClosingBalancePassiveOverall => AccountGroupClasses.Sum(ab => ab.ClosingBalancePassiveOverall);
+    }
+
+    public class AccountGroupClass
+    {
+        [JsonProperty(PropertyName = "classNumber")]
+        public string ClassNumber { get; set; }
+        [JsonProperty(PropertyName = "className")]
+        public string ClassName { get; set; }
+
         [JsonProperty(PropertyName = "accountGroups")]
         public List<AccountGroup> AccountGroups { get; set; }
 
-        [JsonProperty(PropertyName = "openingBalanceActiveOverall")]
-        public decimal OpeningBalanceActiveOverall => AccountGroups.Sum(ag => ag.OpeningBalanceActiveGroupOverall);
-        [JsonProperty(PropertyName = "openingBalancePassiveOverall")]
-        public decimal OpeningBalancePassiveOverall => AccountGroups.Sum(ab => ab.OpeningBalancePassiveGroupOverall);
-        [JsonProperty(PropertyName = "turnoverDebitOverall")]
-        public decimal TurnoverDebitOverall => AccountGroups.Sum(ab => ab.TurnoverDebitGroupOverall);
-        [JsonProperty(PropertyName = "turnoverCreditOverall")]
-        public decimal TurnoverCreditOverall => AccountGroups.Sum(ab => ab.TurnoverCreditGroupOverall);
-        [JsonProperty(PropertyName = "closingBalanceActiveOverall")]
-        public decimal ClosingBalanceActiveOverall => AccountGroups.Sum(ab => ab.ClosingBalanceActiveGroupOverall);
-        [JsonProperty(PropertyName = "closingBalancePassiveOverall")]
-        public decimal ClosingBalancePassiveOverall => AccountGroups.Sum(ab => ab.ClosingBalancePassiveGroupOverall);
+        [JsonProperty(PropertyName = "openingBalanceActiveClassOverall")]
+        public decimal OpeningBalanceActiveOverall => AccountGroups.Sum(ag => ag.OpeningBalanceActiveOverall);
+        [JsonProperty(PropertyName = "openingBalancePassiveClassOverall")]
+        public decimal OpeningBalancePassiveOverall => AccountGroups.Sum(ab => ab.OpeningBalancePassiveOverall);
+        [JsonProperty(PropertyName = "turnoverDebitClassOverall")]
+        public decimal TurnoverDebitOverall => AccountGroups.Sum(ab => ab.TurnoverDebitOverall);
+        [JsonProperty(PropertyName = "turnoverCreditClassOverall")]
+        public decimal TurnoverCreditOverall => AccountGroups.Sum(ab => ab.TurnoverCreditOverall);
+        [JsonProperty(PropertyName = "closingBalanceActiveClassOverall")]
+        public decimal ClosingBalanceActiveOverall => AccountGroups.Sum(ab => ab.ClosingBalanceActiveOverall);
+        [JsonProperty(PropertyName = "closingBalancePassiveClassOverall")]
+        public decimal ClosingBalancePassiveOverall => AccountGroups.Sum(ab => ab.ClosingBalancePassiveOverall);
     }
 
     public class AccountGroup
@@ -44,18 +68,18 @@ namespace Task_2.Models.ViewModels
         public List<AccountBalance> AccountBalances { get; set; }
 
 
-        [JsonProperty(PropertyName = "openingBalanceActiveGroupOverall")]
-        public decimal OpeningBalanceActiveGroupOverall => AccountBalances.Sum(ab => ab.OpeningBalanceActive);
-        [JsonProperty(PropertyName = "openingBalancePassiveGroupOverall")]
-        public decimal OpeningBalancePassiveGroupOverall => AccountBalances.Sum(ab => ab.OpeningBalancePassive);
-        [JsonProperty(PropertyName = "turnoverDebitGroupOverall")]
-        public decimal TurnoverDebitGroupOverall => AccountBalances.Sum(ab => ab.TurnoverDebit);
-        [JsonProperty(PropertyName = "turnoverCreditGroupOverall")]
-        public decimal TurnoverCreditGroupOverall => AccountBalances.Sum(ab => ab.TurnoverCredit);
-        [JsonProperty(PropertyName = "closingBalanceActiveGroupOverall")]
-        public decimal ClosingBalanceActiveGroupOverall => AccountBalances.Sum(ab => ab.ClosingBalanceActive);
-        [JsonProperty(PropertyName = "closingBalancePassiveGroupOverall")]
-        public decimal ClosingBalancePassiveGroupOverall => AccountBalances.Sum(ab => ab.ClosingBalancePassive);
+        [JsonProperty(PropertyName = "openingBalanceActiveOverall")]
+        public decimal OpeningBalanceActiveOverall => AccountBalances.Sum(ab => ab.OpeningBalanceActive);
+        [JsonProperty(PropertyName = "openingBalancePassiveOverall")]
+        public decimal OpeningBalancePassiveOverall => AccountBalances.Sum(ab => ab.OpeningBalancePassive);
+        [JsonProperty(PropertyName = "turnoverDebitOverall")]
+        public decimal TurnoverDebitOverall => AccountBalances.Sum(ab => ab.TurnoverDebit);
+        [JsonProperty(PropertyName = "turnoverCreditOverall")]
+        public decimal TurnoverCreditOverall => AccountBalances.Sum(ab => ab.TurnoverCredit);
+        [JsonProperty(PropertyName = "closingBalanceActiveOverall")]
+        public decimal ClosingBalanceActiveOverall => AccountBalances.Sum(ab => ab.ClosingBalanceActive);
+        [JsonProperty(PropertyName = "closingBalancePassiveOverall")]
+        public decimal ClosingBalancePassiveOverall => AccountBalances.Sum(ab => ab.ClosingBalancePassive);
     }
 
     public class AccountBalance
