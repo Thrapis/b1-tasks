@@ -5,6 +5,7 @@
 
 # Setup Ignore
 **/temporary/
+**/gentemporary/
 
 # User-specific files
 *.rsuser

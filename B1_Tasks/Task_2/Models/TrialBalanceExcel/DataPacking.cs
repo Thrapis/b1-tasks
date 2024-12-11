@@ -33,12 +33,12 @@ public static class DataPacking
 
         // Set width for columns
         sheet.SetColumnWidth(0, 12 * 256);
-        sheet.SetColumnWidth(1, 22 * 256);
-        sheet.SetColumnWidth(2, 22 * 256);
-        sheet.SetColumnWidth(3, 22 * 256);
-        sheet.SetColumnWidth(4, 22 * 256);
-        sheet.SetColumnWidth(5, 22 * 256);
-        sheet.SetColumnWidth(6, 22 * 256);
+        sheet.SetColumnWidth(1, 26 * 256);
+        sheet.SetColumnWidth(2, 26 * 256);
+        sheet.SetColumnWidth(3, 26 * 256);
+        sheet.SetColumnWidth(4, 26 * 256);
+        sheet.SetColumnWidth(5, 26 * 256);
+        sheet.SetColumnWidth(6, 26 * 256);
 
         // Write meta data into sheet
         WriteMeta(workbook, sheet, data);
@@ -54,7 +54,7 @@ public static class DataPacking
         }
     }
 
-    public static void WriteMeta(IWorkbook workbook, ISheet sheet, TrialBalanceFileData data)
+    static void WriteMeta(IWorkbook workbook, ISheet sheet, TrialBalanceFileData data)
     {
         var defaultFont = workbook.CreateFont();
         defaultFont.FontName = "Arial";
@@ -159,7 +159,7 @@ public static class DataPacking
         sheet.AddMergedRegion(new CellRangeAddress(6, 6, 5, 6));
     }
 
-    public static void WriteData(IWorkbook workbook, ISheet sheet, TrialBalanceFileData data)
+    static void WriteData(IWorkbook workbook, ISheet sheet, TrialBalanceFileData data)
     {
         // Set default style and font
         var defaultFont = workbook.CreateFont();

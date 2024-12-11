@@ -2,7 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Net.Http.Headers;
+using NPOI.HPSF;
+using NPOI.HSSF.UserModel;
 using System;
+using System.IO;
+using System.Net;
 using Task_2.Models.Converters;
 using Task_2.Models.Database;
 using Task_2.Models.Database.Entities;
@@ -16,6 +21,7 @@ namespace Task_2.Controllers;
 public class TrialBalanceController
 {
     private const string _saveDirectory = "./temporary";
+    private const string _generateDirectory = "./gentemporary";
 
     private readonly IDbContextFactory<ApplicationContext> _dbFactory;
 
@@ -158,14 +164,56 @@ public class TrialBalanceController
         // Create context using factory
         using var dbContext = _dbFactory.CreateDbContext();
 
+        // Get file inforamtion
         var file = await dbContext.Files
             .Include(f => f.Organisation)
             .Include(f => f.Currency)
             .Include(f => f.Balances).ThenInclude(b => b.Account!.Class)
             .SingleAsync(f => f.Id == fileId);
 
+        // Convert
         var fileContent = EntityToViewModelConverter.ExcelDataToFileContent(file);
 
         return fileContent;
+    }
+
+    [HttpPost("DownloadFileData")]
+    public async Task<FileStreamResult> DownloadFileData([FromForm] int fileId, [FromForm] int[] classIds )
+    {
+        Console.WriteLine(fileId);
+        Console.WriteLine(classIds);
+
+        // Create context using factory
+        using var dbContext = _dbFactory.CreateDbContext();
+
+        // Get file inforamtion
+        var file = await dbContext.Files
+            .Where(f => f.Id == fileId)
+            .Include(f => f.Organisation)
+            .Include(f => f.Currency)
+            .Include(f => f.Balances).ThenInclude(b => b.Account!.Class)
+            .SingleAsync(f => f.Id == fileId);
+
+        // Get rid of balances where not in classIds
+        file.Balances = file.Balances.Where(b => classIds.Any(cid => cid == b.Account!.ClassId)).ToList();
+
+        // Get data formatted for excel file construction
+        var data = EntityToExcelDataConverter.FileDataFromExcelFile(file);
+
+        var filename = $"generated-{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.xlsx";
+        var filepath = Path.Combine(_generateDirectory, filename);
+
+        if (!Directory.Exists(_generateDirectory))
+        {
+            Directory.CreateDirectory(_generateDirectory);
+        }
+
+        DataPacking.CreateFileFromData(filepath, data);
+
+        var mimeType = "application/xlsx";
+        return new FileStreamResult(new FileStream(filepath, FileMode.Open, FileAccess.Read), mimeType)
+        {
+            FileDownloadName = filename
+        };
     }
 }
