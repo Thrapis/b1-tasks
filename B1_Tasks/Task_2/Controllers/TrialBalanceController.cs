@@ -180,9 +180,6 @@ public class TrialBalanceController
     [HttpPost("DownloadFileData")]
     public async Task<FileStreamResult> DownloadFileData([FromForm] int fileId, [FromForm] int[] classIds )
     {
-        Console.WriteLine(fileId);
-        Console.WriteLine(classIds);
-
         // Create context using factory
         using var dbContext = _dbFactory.CreateDbContext();
 
